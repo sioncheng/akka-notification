@@ -8,10 +8,10 @@ object NotiServer {
 }
 
 class NotiServer (var host: String, var port: Int){
-	val tcpServer = NotiTcpServer()
+	val tcpServer = NotiTcpServer(host,port)
 
 	def start() {
-		tcpServer ! Start(host,port)
+		tcpServer ! Start()
 		//
 		Thread.sleep(100000) //just for test, temprorayly.
 	}

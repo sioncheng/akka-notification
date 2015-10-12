@@ -6,23 +6,25 @@ import akka.util.ByteString
 import java.net.InetSocketAddress
 
 object NotiTcpServer {
-	case class Start(host:String, port:Int)
+	case class Start()
 	case class Stop()
 
-	def apply() = {
+	def apply(host:String, port:Int) = {
 		val system = ActorSystem("NotiTcpServer")
-		system.actorOf(Props[NotiTcpServer])
+		system.actorOf(Props(new NotiTcpServer(host,port)))
 	}
 }
 
 
-class NotiTcpServer extends Actor {
+class NotiTcpServer(val host:String, val port:Int)
+	extends Actor {
+	//
 	import NotiTcpServer._
 	import Tcp._
 	import context.system
 
 	def receive = {
-		case s @ Start(host,port) =>
+		case s @ Start() =>
 			IO(Tcp) ! Bind(self, new InetSocketAddress(host, port))
 		case b @ Bound(localAddress) =>
 			Logger.debug("bound " + localAddress)
